@@ -33,13 +33,11 @@ class JozekSpider(scrapy.Spider):
     def parse(self, response):
         for product in response.css('div.category-product'):
             yield {
-                'product-name': product.css('div::text').extract(),
-                'old-price': product.css('del::text').extract_first(),
-                'price': product.css('span::text').extract_first()
+                'product': product.css('div.product-name::text').extract_first(),
+                'price-old': product.css('del.old-price::text').extract_first(),
+                'price': product.css('span.color.main-price::text').extract_first()
                 #TODO: Get images (thumbnails)
             }
         next_page = response.css('li.last a::attr("href")').extract_first()
         if next_page is not None:
             yield response.follow(next_page, self.parse)
-
-        #TODO: Get output already nicely formatted
